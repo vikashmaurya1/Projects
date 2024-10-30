@@ -1,0 +1,272 @@
+import time
+import random
+import matplotlib.pyplot as plt
+
+questions = {
+    'DSA': {
+        'easy': [
+            {'question': 'What is the time complexity of binary search?', 'options': ['O(n)', 'O(log n)', 'O(n^2)', 'O(n log n)'], 'answer': 1, 'hint': 'Divide and conquer method'},
+            {'question': 'Which data structure works on the principle of FIFO?', 'options': ['Stack', 'Queue', 'Array', 'Tree'], 'answer': 1, 'hint': 'First In First Out'},
+            {'question': 'Which data structure is used for recursion?', 'options': ['Queue', 'Stack', 'Array', 'Graph'], 'answer': 1, 'hint': 'LIFO principle'},
+            {'question': 'Which traversal method visits left node, root, right node?', 'options': ['Pre-order', 'In-order', 'Post-order', 'Level-order'], 'answer': 1, 'hint': 'Root lies in between'},
+            {'question': 'What is the best case time complexity of bubble sort?', 'options': ['O(n^2)', 'O(n log n)', 'O(n)', 'O(log n)'], 'answer': 2, 'hint': 'Sorted array has fewer passes'},
+            {'question': 'What is the space complexity of quicksort?', 'options': ['O(log n)', 'O(n)', 'O(n^2)', 'O(n log n)'], 'answer': 0, 'hint': 'Depends on recursion depth'},
+            {'question': 'Which is not a self-balancing binary search tree?', 'options': ['AVL', 'Red-Black Tree', 'B-tree', 'Binary Heap'], 'answer': 3, 'hint': 'Binary heap is a different structure'},
+            {'question': 'Which data structure is used in breadth-first search?', 'options': ['Stack', 'Queue', 'Tree', 'Graph'], 'answer': 1, 'hint': 'Queue is used in level-wise traversal'},
+            {'question': 'What is the time complexity of inserting into a binary heap?', 'options': ['O(log n)', 'O(n)', 'O(1)', 'O(n log n)'], 'answer': 0, 'hint': 'Heapify occurs after insertion'},
+            {'question': 'Which algorithm is used to find the shortest path in a graph?', 'options': ['Dijkstra', 'DFS', 'BFS', 'Bellman-Ford'], 'answer': 0, 'hint': 'It uses a priority queue'},
+        ],
+        'medium': [
+            {'question': 'Which data structure is used in recursion?', 'options': ['Queue', 'Stack', 'Array', 'Heap'], 'answer': 1, 'hint': 'LIFO principle'},
+            {'question': 'Which graph traversal is used in depth-first search?', 'options': ['BFS', 'DFS', 'Dijkstra', 'Kruskal'], 'answer': 1, 'hint': 'Depth first'},
+            {'question': 'What is the time complexity of merge sort?', 'options': ['O(n log n)', 'O(n^2)', 'O(n)', 'O(log n)'], 'answer': 0, 'hint': 'Divide and conquer'},
+            {'question': 'What is the time complexity of heapify?', 'options': ['O(n)', 'O(log n)', 'O(n log n)', 'O(1)'], 'answer': 1, 'hint': 'Depends on heap height'},
+            {'question': 'What is the worst-case time complexity of quicksort?', 'options': ['O(n^2)', 'O(log n)', 'O(n log n)', 'O(n)'], 'answer': 0, 'hint': 'Pivot selection matters'},
+            {'question': 'What is the auxiliary space complexity of merge sort?', 'options': ['O(n)', 'O(log n)', 'O(n log n)', 'O(1)'], 'answer': 0, 'hint': 'Merging requires space'},
+            {'question': 'Which algorithm finds the minimum spanning tree?', 'options': ['Kruskal', 'Dijkstra', 'Prim', 'Bellman-Ford'], 'answer': 0, 'hint': 'It sorts edges by weight'},
+            {'question': 'Which algorithm is not used for shortest path finding?', 'options': ['Bellman-Ford', 'Floyd-Warshall', 'Prim', 'Dijkstra'], 'answer': 2, 'hint': 'Prim finds MST'},
+            {'question': 'What is the height of a complete binary tree with n nodes?', 'options': ['log n', 'n', 'n/2', 'sqrt(n)'], 'answer': 0, 'hint': 'Height is proportional to log n'},
+            {'question': 'Which sorting algorithm is in-place but not stable?', 'options': ['QuickSort', 'MergeSort', 'HeapSort', 'BubbleSort'], 'answer': 0, 'hint': 'Depends on partitioning'},
+        ],
+        'hard': [
+            {'question': 'What is the amortized time complexity of splay trees?', 'options': ['O(log n)', 'O(n)', 'O(1)', 'O(n log n)'], 'answer': 0, 'hint': 'Rotation brings most accessed to root'},
+            {'question': 'Which data structure is used in Tarjan’s SCC algorithm?', 'options': ['Stack', 'Queue', 'Priority Queue', 'Heap'], 'answer': 0, 'hint': 'DFS based'},
+            {'question': 'What is the time complexity of KMP string matching?', 'options': ['O(n+m)', 'O(n^2)', 'O(log n)', 'O(m log n)'], 'answer': 0, 'hint': 'n is text length, m is pattern length'},
+            {'question': 'Which data structure is used for nearest neighbor search?', 'options': ['K-D Tree', 'B-Tree', 'AVL Tree', 'Red-Black Tree'], 'answer': 0, 'hint': 'Used in spatial indexing'},
+            {'question': 'What is the worst-case time complexity of AVL rotations?', 'options': ['O(log n)', 'O(1)', 'O(n)', 'O(n^2)'], 'answer': 1, 'hint': 'Rotation is constant time'},
+            {'question': 'Which data structure is optimal for Dijkstra’s algorithm?', 'options': ['Fibonacci Heap', 'Binary Heap', 'Priority Queue', 'Queue'], 'answer': 0, 'hint': 'Fib-heap has faster decrease-key operation'},
+            {'question': 'What is the time complexity of Floyd-Warshall algorithm?', 'options': ['O(n^3)', 'O(n^2)', 'O(n log n)', 'O(1)'], 'answer': 0, 'hint': 'Triple nested loops'},
+            {'question': 'Which tree traversal does not use recursion or stack?', 'options': ['Morris Traversal', 'Pre-order Traversal', 'In-order Traversal', 'Post-order Traversal'], 'answer': 0, 'hint': 'Threaded binary trees'},
+            {'question': 'What is the space complexity of DFS using recursion?', 'options': ['O(n)', 'O(log n)', 'O(1)', 'O(n log n)'], 'answer': 0, 'hint': 'Each recursive call takes space'},
+            {'question': 'Which algorithm is used in union-find data structure?', 'options': ['Kruskal', 'Dijkstra', 'DFS', 'Floyd-Warshall'], 'answer': 0, 'hint': 'Finds MST using sets'},
+        ]
+    },
+      'DAA': {
+          'easy': [
+            {'question': 'What is the time complexity of linear search?', 'options': ['O(n)', 'O(log n)', 'O(n^2)', 'O(n log n)'], 'answer': 0, 'hint': 'It scans each element'},
+            {'question': 'Which algorithm uses a divide and conquer approach?', 'options': ['Binary Search', 'Bubble Sort', 'Selection Sort', 'Insertion Sort'], 'answer': 0, 'hint': 'Divide the array and search'},
+            {'question': 'Which algorithm is used for sorting?', 'options': ['Quick Sort', 'DFS', 'BFS', 'Dijkstra'], 'answer': 0, 'hint': 'A comparison sort'},
+            {'question': 'Which problem is solved using dynamic programming?', 'options': ['Fibonacci Sequence', 'Binary Search', 'Merge Sort', 'DFS'], 'answer': 0, 'hint': 'It solves subproblems recursively'},
+            {'question': 'Which sorting algorithm has O(n^2) time complexity?', 'options': ['Merge Sort', 'Quick Sort', 'Heap Sort', 'Selection Sort'], 'answer': 3, 'hint': 'Simple but inefficient for large arrays'},
+            {'question': 'Which of the following is a greedy algorithm?', 'options': ['Prim’s Algorithm', 'Floyd-Warshall', 'Bellman-Ford', 'DFS'], 'answer': 0, 'hint': 'It finds the MST'},
+            {'question': 'What does Dijkstra’s algorithm find?', 'options': ['Shortest Path', 'Longest Path', 'MST', 'DFS Tree'], 'answer': 0, 'hint': 'It finds the least cost path in a graph'},
+            {'question': 'Which algorithm is best for shortest path with negative weights?', 'options': ['Bellman-Ford', 'Dijkstra', 'Kruskal', 'DFS'], 'answer': 0, 'hint': 'It handles negative weights correctly'},
+            {'question': 'Which of the following algorithms is used in string matching?', 'options': ['KMP', 'DFS', 'BFS', 'Dijkstra'], 'answer': 0, 'hint': 'Knuth-Morris-Pratt algorithm'},
+            {'question': 'Which problem is NP-hard?', 'options': ['Traveling Salesman Problem', 'Sorting', 'Searching', 'Fibonacci'], 'answer': 0, 'hint': 'It is a combinatorial optimization problem'},
+         ],
+          'medium': [
+            {'question': 'What is the time complexity of matrix chain multiplication?', 'options': ['O(n^3)', 'O(n^2)', 'O(n)', 'O(log n)'], 'answer': 0, 'hint': 'Dynamic programming approach'},
+            {'question': 'Which algorithm is used for all-pairs shortest paths?', 'options': ['Floyd-Warshall', 'Dijkstra', 'Bellman-Ford', 'Kruskal'], 'answer': 0, 'hint': 'Dynamic programming for shortest paths'},
+            {'question': 'What is the running time of Prim’s algorithm using a binary heap?', 'options': ['O(E log V)', 'O(V^2)', 'O(E+V)', 'O(E log E)'], 'answer': 0, 'hint': 'E is the number of edges, V is the number of vertices'},
+            {'question': 'Which algorithm solves the 0/1 knapsack problem?', 'options': ['Dynamic Programming', 'Greedy', 'DFS', 'Binary Search'], 'answer': 0, 'hint': 'It uses recursion and memoization'},
+            {'question': 'What is the worst-case time complexity of Bellman-Ford?', 'options': ['O(VE)', 'O(V^2)', 'O(E log V)', 'O(V log E)'], 'answer': 0, 'hint': 'V is the number of vertices, E is the number of edges'},
+            {'question': 'What is the time complexity of the Rabin-Karp algorithm?', 'options': ['O(n+m)', 'O(n^2)', 'O(log n)', 'O(m log n)'], 'answer': 0, 'hint': 'n is text length, m is pattern length'},
+            {'question': 'Which problem does the Ford-Fulkerson method solve?', 'options': ['Max Flow', 'MST', 'Shortest Path', 'Knapsack'], 'answer': 0, 'hint': 'It computes the maximum flow in a flow network'},
+            {'question': 'Which algorithm is used to find strongly connected components?', 'options': ['Kosaraju’s Algorithm', 'Dijkstra', 'Kruskal', 'DFS'], 'answer': 0, 'hint': 'It uses two passes of DFS'},
+            {'question': 'What is the time complexity of the FFT algorithm?', 'options': ['O(n log n)', 'O(n^2)', 'O(log n)', 'O(1)'], 'answer': 0, 'hint': 'It is efficient for polynomial multiplication'},
+            {'question': 'Which of the following is solved using backtracking?', 'options': ['N-Queens Problem', 'Sorting', 'Binary Search', 'Knapsack'], 'answer': 0, 'hint': 'Backtracking explores all possible solutions'},
+         ],
+           'hard': [
+            {'question': 'What is the time complexity of Strassen’s matrix multiplication?', 'options': ['O(n^2.81)', 'O(n^3)', 'O(n log n)', 'O(n^2)'], 'answer': 0, 'hint': 'It reduces the number of multiplications needed'},
+            {'question': 'What is the approximation ratio of the greedy algorithm for the knapsack problem?', 'options': ['1/2', '2/3', '1', '3/4'], 'answer': 2, 'hint': 'Greedy can provide an optimal solution in certain cases'},
+            {'question': 'What is the time complexity of the Edmonds-Karp algorithm?', 'options': ['O(VE^2)', 'O(VE)', 'O(V^3)', 'O(E^3)'], 'answer': 0, 'hint': 'It uses the BFS to find augmenting paths'},
+            {'question': 'Which algorithm is used to solve the maximum bipartite matching problem?', 'options': ['Hungarian Algorithm', 'Ford-Fulkerson', 'Bellman-Ford', 'DFS'], 'answer': 0, 'hint': 'It finds the perfect matching in a bipartite graph'},
+            {'question': 'Which problem can be solved using branch and bound?', 'options': ['Travelling Salesman Problem', 'Matrix Multiplication', 'Sorting', 'Searching'], 'answer': 0, 'hint': 'Branch and bound explores all solutions and prunes the suboptimal ones'},
+            {'question': 'What is the time complexity of the Hopcroft-Karp algorithm?', 'options': ['O(sqrt(V)E)', 'O(VE)', 'O(V^2)', 'O(E^3)'], 'answer': 0, 'hint': 'It is used for finding maximum matching in a bipartite graph'},
+            {'question': 'Which algorithm is used to solve the vertex cover problem?', 'options': ['2-approximation Algorithm', 'Dijkstra', 'Floyd-Warshall', 'DFS'], 'answer': 0, 'hint': 'It is an NP-hard problem but has an approximation algorithm'},
+            {'question': 'Which of the following is an NP-complete problem?', 'options': ['Hamiltonian Cycle', 'Sorting', 'Matrix Multiplication', 'Binary Search'], 'answer': 0, 'hint': 'It is a cycle that visits every vertex exactly once'},
+            {'question': 'What is the time complexity of finding the convex hull using the Graham scan?', 'options': ['O(n log n)', 'O(n^2)', 'O(log n)', 'O(n)'], 'answer': 0, 'hint': 'It sorts the points and finds the convex hull'},
+            {'question': 'Which algorithm is used to solve the set cover problem?', 'options': ['Greedy Algorithm', 'Dynamic Programming', 'Divide and Conquer', 'DFS'], 'answer': 0, 'hint': 'It provides a logarithmic approximation to the optimal solution'},
+         ]
+     },
+    'COA':{
+        'easy':[
+            {'question': 'What is the full form of ALU?', 'options': ['Arithmetic Logic Unit', 'Algorithmic Logic Unit', 'Array Logic Unit', 'Asynchronous Logic Unit'], 'answer': 0, 'hint': 'It performs arithmetic and logical operations'},
+            {'question': 'What is a register used for in a CPU?', 'options': ['Temporary Data Storage', 'Permanent Data Storage', 'Data Transfer', 'Arithmetic Operations'], 'answer': 0, 'hint': 'Registers store temporary data'},
+            {'question': 'What is the purpose of a cache memory?', 'options': ['Speed up Memory Access', 'Store Data Permanently', 'Data Transfer', 'Arithmetic Operations'], 'answer': 0, 'hint': 'It is faster than main memory'},
+            {'question': 'Which of the following is not a type of addressing mode?', 'options': ['Immediate', 'Direct', 'Indirect', 'Long'], 'answer': 3, 'hint': 'It is not a valid mode'},
+            {'question': 'What is the full form of RAM?', 'options': ['Random Access Memory', 'Read Access Memory', 'Readable And Writable Memory', 'Real Access Memory'], 'answer': 0, 'hint': 'It is used for temporary storage'},
+            {'question': 'What is the clock speed of a CPU measured in?', 'options': ['Hertz', 'Bits', 'Bytes', 'Kilobytes'], 'answer': 0, 'hint': 'It is the frequency of clock pulses'},
+            {'question': 'Which memory is non-volatile?', 'options': ['ROM', 'RAM', 'Cache', 'Register'], 'answer': 0, 'hint': 'It retains data after power off'},
+            {'question': 'Which instruction format does not include an operand?', 'options': ['Zero Address', 'One Address', 'Two Address', 'Three Address'], 'answer': 0, 'hint': 'It uses implicit operands'},
+            {'question': 'Which part of the CPU is responsible for controlling operations?', 'options': ['Control Unit', 'ALU', 'Register', 'Cache'], 'answer': 0, 'hint': 'It directs the operation of the processor'},
+            {'question': 'What is the full form of ROM?', 'options': ['Read Only Memory', 'Random Output Memory', 'Readable Output Memory', 'Real Only Memory'], 'answer': 0, 'hint': 'It is used for permanent storage'},
+        ],
+        'medium':[
+            {'question': 'What is the difference between Harvard and Von Neumann architecture?', 'options': ['Separate memory for data and instructions', 'Same memory for data and instructions', 'Different memory sizes', 'Data stored in registers'], 'answer': 0, 'hint': 'Harvard architecture separates memory for data and instructions'},
+            {'question': 'Which addressing mode is used in instructions with constant operands?', 'options': ['Immediate', 'Direct', 'Indirect', 'Register'], 'answer': 0, 'hint': 'Operand is given directly in the instruction'},
+            {'question': 'What is the main function of a control unit in a CPU?', 'options': ['Direct operations', 'Perform arithmetic operations', 'Store data', 'Transfer data'], 'answer': 0, 'hint': 'It directs the operations of the CPU'},
+            {'question': 'Which technique is used to resolve data hazards in pipelines?', 'options': ['Forwarding', 'Stalling', 'Branch Prediction', 'Cache'], 'answer': 0, 'hint': 'It sends data directly from one pipeline stage to another'},
+            {'question': 'Which memory is closest to the CPU?', 'options': ['Registers', 'Cache', 'RAM', 'ROM'], 'answer': 0, 'hint': 'It is located inside the CPU'},
+            {'question': 'What is the purpose of a branch predictor in a pipeline?', 'options': ['Predict the outcome of branches', 'Execute instructions', 'Store instructions', 'Fetch data'], 'answer': 0, 'hint': 'It improves pipeline efficiency by guessing branch outcomes'},
+            {'question': 'What is the main purpose of pipelining in CPU design?', 'options': ['Increase instruction throughput', 'Reduce instruction latency', 'Increase instruction cache size', 'Reduce instruction size'], 'answer': 0, 'hint': 'It allows multiple instructions to be executed simultaneously'},
+            {'question': 'What is the function of a program counter (PC)?', 'options': ['Stores the address of the next instruction', 'Stores the current instruction', 'Stores the result of an instruction', 'Stores the operand'], 'answer': 0, 'hint': 'It points to the address of the next instruction to be executed'},
+            {'question': 'What is the size of an address bus in a 64-bit system?', 'options': ['64 bits', '32 bits', '16 bits', '128 bits'], 'answer': 0, 'hint': 'It determines the number of addressable memory locations'},
+            {'question': 'What is a multiplexer used for in a CPU?', 'options': ['Select one of several inputs', 'Store data', 'Perform arithmetic operations', 'Transfer data'], 'answer': 0, 'hint': 'It selects one of several inputs to pass to the output'},
+        ],
+        'hard':[
+          {'question': 'What is the purpose of out-of-order execution in modern CPUs?', 'options': ['Improve instruction-level parallelism', 'Reduce power consumption', 'Increase clock speed', 'Simplify CPU design'], 'answer': 0, 'hint': 'It allows independent instructions to be executed in parallel'},
+            {'question': 'Which of the following is a superscalar architecture feature?', 'options': ['Multiple instruction pipelines', 'Single instruction pipeline', 'Single ALU', 'Sequential instruction execution'], 'answer': 0, 'hint': 'It allows multiple instructions to be executed simultaneously'},
+            {'question': 'What is the function of a reorder buffer in a CPU?', 'options': ['Maintain correct instruction order', 'Store instructions', 'Store data', 'Perform arithmetic operations'], 'answer': 0, 'hint': 'It ensures instructions are committed in the correct order'},
+            {'question': 'Which technique is used to handle branch hazards in pipelines?', 'options': ['Branch prediction', 'Data forwarding', 'Cache', 'Stalling'], 'answer': 0, 'hint': 'It guesses the outcome of a branch to improve pipeline efficiency'},
+            {'question': 'What is the purpose of speculative execution in CPUs?', 'options': ['Execute instructions before their outcomes are known', 'Reduce instruction latency', 'Increase instruction size', 'Fetch data faster'], 'answer': 0, 'hint': 'It guesses which instructions will be needed and executes them in advance'},
+            {'question': 'What is the difference between SIMD and MIMD architectures?', 'options': ['SIMD processes multiple data with one instruction, MIMD processes multiple data with multiple instructions', 'SIMD processes single data with multiple instructions, MIMD processes multiple data with one instruction', 'Both process single data with multiple instructions', 'Both process multiple data with one instruction'], 'answer': 0, 'hint': 'SIMD is used for parallel processing, MIMD is used for distributed processing'},
+            {'question': 'Which technique is used in multi-core processors to share the workload?', 'options': ['Load balancing', 'Branch prediction', 'Cache', 'Stalling'], 'answer': 0, 'hint': 'It distributes the workload evenly across multiple cores'},
+            {'question': 'What is the role of a memory management unit (MMU) in a CPU?', 'options': ['Translate virtual addresses to physical addresses', 'Store instructions', 'Perform arithmetic operations', 'Transfer data'], 'answer': 0, 'hint': 'It handles memory access and translation'},
+            {'question': 'Which of the following is a characteristic of a VLIW architecture?', 'options': ['Multiple instructions per clock cycle', 'Single instruction per clock cycle', 'Multiple ALUs', 'Multiple instruction pipelines'], 'answer': 0, 'hint': 'VLIW executes multiple instructions simultaneously in each clock cycle'},
+            {'question': 'What is the purpose of hyper-threading in CPUs?', 'options': ['Increase parallelism by allowing multiple threads to run on a single core', 'Reduce instruction size', 'Increase instruction cache size', 'Improve instruction latency'], 'answer': 0, 'hint': 'It increases the number of instructions that can be executed in parallel'},
+        ]
+    },
+    'Physics':{
+        'easy':[
+            {'question': 'What is the unit of force?', 'options': ['Newton', 'Joule', 'Pascal', 'Watt'], 'answer': 0, 'hint': 'It is named after a famous scientist'},
+            {'question': 'What is the speed of light in vacuum?', 'options': ['3 x 10^8 m/s', '3 x 10^6 m/s', '300 m/s', '1500 m/s'], 'answer': 0, 'hint': 'It is a universal constant'},
+            {'question': 'What is the acceleration due to gravity on Earth?', 'options': ['9.8 m/s^2', '10 m/s^2', '5 m/s^2', '15 m/s^2'], 'answer': 0, 'hint': 'It is approximately 10 m/s^2'},
+            {'question': 'What is the formula for kinetic energy?', 'options': ['1/2 mv^2', 'mgh', 'F=ma', 'P=W/t'], 'answer': 0, 'hint': 'It involves mass and velocity'},
+            {'question': 'Which law states that every action has an equal and opposite reaction?', 'options': ['Newton’s Third Law', 'Newton’s First Law', 'Newton’s Second Law', 'Law of Conservation of Energy'], 'answer': 0, 'hint': 'It describes the interaction between two objects'},
+            {'question': 'What is the unit of electric current?', 'options': ['Ampere', 'Volt', 'Ohm', 'Coulomb'], 'answer': 0, 'hint': 'It is named after a French physicist'},
+            {'question': 'What is the formula for Ohm’s law?', 'options': ['V=IR', 'P=VI', 'E=mc^2', 'F=ma'], 'answer': 0, 'hint': 'It relates voltage, current, and resistance'},
+            {'question': 'What is the value of Planck’s constant?', 'options': ['6.626 x 10^-34 Js', '1.602 x 10^-19 C', '9.8 m/s^2', '3 x 10^8 m/s'], 'answer': 0, 'hint': 'It is a fundamental constant in quantum mechanics'},
+            {'question': 'What is the formula for work done?', 'options': ['W=Fd', 'P=VI', 'V=IR', 'E=mc^2'], 'answer': 0, 'hint': 'It involves force and distance'},
+            {'question': 'What is the SI unit of power?', 'options': ['Watt', 'Joule', 'Newton', 'Pascal'], 'answer': 0, 'hint': 'It is named after a Scottish engineer'},
+        ],
+        'medium':[
+
+        ],
+        'hard':[
+
+        ]
+    },
+}
+
+leaderboard = {}
+
+# Helper function to display the leaderboard
+def display_leaderboard():
+    print("\nLeaderboard:")
+    for user, score in sorted(leaderboard.items(), key=lambda x: x[1], reverse=True):
+        print(f"{user}: {score} points")
+
+# Helper function to calculate score, accuracy, and show pie chart at the end
+def show_final_competition_results():
+    users = list(leaderboard.keys())
+    scores = list(leaderboard.values())
+
+    # Display pie chart
+    plt.pie(scores, labels=users, autopct='%1.1f%%', startangle=140)
+    plt.title("Final Competition Leaderboard")
+    plt.axis('equal')
+    plt.show()
+
+# Helper function to calculate accuracy and show the bar chart for normal mode
+def show_normal_mode_chart(user, question_num, score, total_questions):
+    print(f"{user}'s score after question {question_num}: {score} points")
+
+    # Plotting the bar chart for score
+    plt.bar([user], [score], color='green')
+    plt.xlabel('User')
+    plt.ylabel('Score')
+    plt.title(f'Score after Question {question_num}')
+    plt.show()
+
+# Function to conduct the quiz
+def conduct_quiz(user, topic, level, mode='normal'):
+    questions_set = questions[topic][level]
+    random.shuffle(questions_set)
+    score = 0
+    total_questions = len(questions_set)
+
+    time_limit = 15  # 15 seconds for each question in all levels
+
+    for i, q in enumerate(questions_set):
+        print(f"\nQ{i+1}: {q['question']}")
+        for j, option in enumerate(q['options']):
+            print(f"{j+1}. {option}")
+        print("5. Skip")
+        print("6. Hint")
+
+        start_time = time.time()
+
+        user_choice = input("Your choice (1-6 for skip or hint): ")
+
+        # Handle time limit
+        elapsed_time = time.time() - start_time
+        if elapsed_time > time_limit:
+            print("Time's up! Moving to the next question.")
+            continue
+
+        # Provide hint if chosen
+        if user_choice == '6':
+            print(f"Hint: {q['hint']}")
+            user_choice = input("Your final choice (1-5 to skip): ")
+
+        # Scoring logic
+        if user_choice == '5':
+            print("You chose to skip the question.")
+            print(f"Explanation: The correct answer is {q['options'][q['answer']]}.")
+            continue
+        elif int(user_choice) - 1 == q['answer']:
+            print("Correct!")
+            score += 4  # 4 points for a correct answer
+        else:
+            print("Incorrect.")
+            score -= 1  # -1 point for an incorrect answer
+            print(f"Explanation: The correct answer is {q['options'][q['answer']]}.")
+
+        # Display chart for normal mode after every question
+        #if mode == 'normal':
+            #show_normal_mode_chart(user, i+1, score, total_questions)
+
+    # Final score and leaderboard update
+    leaderboard[user] = score
+    print(f"\n{user}, you scored {score} points in total.")
+
+    if mode == 'normal':
+        # Final bar chart in normal mode
+        plt.bar(leaderboard.keys(), leaderboard.values(), color='blue')
+        plt.xlabel('Users')
+        plt.ylabel('Score')
+        plt.title(f'{user} Final Score')
+        plt.show()
+
+# Helper function to select topic and level using numbers
+def select_topic():
+    print("\nSelect a topic:")
+    topics = ['DSA', 'DAA', 'COA', 'Physics']
+    for idx, topic in enumerate(topics, 1):
+        print(f"{idx}. {topic}")
+
+    topic_choice = int(input("Enter the number corresponding to your topic: "))
+    return topics[topic_choice - 1]
+
+def select_level():
+    print("\nSelect a level:")
+    levels = ['easy', 'medium', 'hard']
+    for idx, level in enumerate(levels, 1):
+        print(f"{idx}. {level.capitalize()}")
+
+    level_choice = int(input("Enter the number corresponding to your level: "))
+    return levels[level_choice - 1]
+
+# Main function to start the quiz
+def start_quiz():
+    user = input("Enter your name: ")
+    mode = input("Select mode (normal/competition): ")
+
+    if mode == 'competition':
+        users = int(input("Enter the number of users: "))
+        for i in range(users):
+            user_name = input(f"Enter name of User {i+1}: ")
+            topic = select_topic()
+            level = select_level()
+            conduct_quiz(user_name, topic, level, mode)
+        display_leaderboard()
+        # Final pie chart after competition mode
+        show_final_competition_results()
+    else:
+        topic = select_topic()
+        level = select_level()
+        conduct_quiz(user, topic, level)
+
+if __name__ == "__main__":
+    start_quiz()
